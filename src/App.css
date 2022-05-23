@@ -1,0 +1,89 @@
+.App {
+  width: 100%;
+  min-height: 100vh;
+  /* background-color: black;0 */
+  margin: auto;
+}
+
+.main {
+  box-sizing: border-box;
+  background-color: black;
+  padding: 0.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  max-width: 900px;
+  margin: auto;
+}
+
+.main .tier {
+  display: flex;
+  flex-wrap: nowrap;
+  height: 4.5rem;
+  width: 100%;
+  gap: 0.25rem;
+}
+
+.main .tier .title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 4.5rem;
+  height: 100%;
+  font-weight: 500;
+  font-size: 1.25rem;
+}
+
+.main .dropArea {
+  background-color: rgb(27, 27, 27);
+  flex: 1 1 100%;
+}
+
+.imgs {
+  box-sizing: border-box;
+  max-width: 900px;
+  min-height: calc(4.5rem * 2);
+  margin: auto;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  background-color: rgb(239, 239, 239);
+}
+
+input[type='color'] {
+  background-color: transparent;
+  border: 0;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 100%;
+}
+
+.text-white {
+  color: white;
+}
+.flex {
+  display: flex;
+}
+
+.flex-col{
+  flex-direction: column;
+}
+.pointer{
+  cursor: pointer;
+}
+.justify-between {
+  justify-content: space-between;
+}
+.justify-center {
+  justify-content: center;
+}
+.cntrls {
+  box-sizing: border-box;
+  max-width: 900px;
+  margin: auto;
+}
+
+.imgc{
+  width: 4.5rem;
+  height: 4.5rem;
+  background-color: aquamarine;
+}
