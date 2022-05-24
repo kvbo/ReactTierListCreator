@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { v4 as uuid } from 'uuid';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import './App.css';
@@ -17,16 +17,14 @@ const _Tier = (title, color) => {
   return { title: title, color: color, id: title + color, list: [] }
 }
 
-const _Images = (url=null) => {
+const _Image = (url=null) => {
   let  id = uuid();
   return { url: url, uuid:  id}
 }
 
 const List = () => {
   const [ editable, setEditable ] = useState(false)
-  
-  const [ collection, setCollection ] = useState([_Images(), _Images(), _Images()])
-
+  const [ collection, setCollection ] = useState([])
   const [ tierList, setTierList ] = useState([
     _Tier('S', '#ff6666'),
     _Tier('A', '#ffbb99'),
@@ -41,18 +39,56 @@ const List = () => {
     if(result.type === null)
       return
 
-    const source = result.destination.source;
-    const destination = result.destination.destination;
+    const source = result.source;
+    const destination = result.destination;
 
-    if(destination.droppableId !== 'imgs'){
-      let s =  tierList.indexOf(tierList.filter(i => i.id === destination.droppableId )[0])
-      tierList[s].list.push()
+    //do nothing if the source and destination the same 
+    if(source.droppableId === destination.droppableId)
+      return 
+
+    if(source.droppableId !== 'imgs'){
+      let s_index =  tierList.indexOf(tierList.filter(i => i.id === source.droppableId )[0])
+      let item = tierList[s_index]['list'].slice(source.index)[0]
+
+      if(destination.droppableId !== 'imgs'){
+        let d_index =  tierList.indexOf(tierList.filter(i => i.id === destination.droppableId )[0])
+        
+        tierList[d_index]['list'].push(item)
+
+      }else{
+        collection.push(item)
+        setCollection([...collection])
+      }
+
+      tierList[s_index]['list'][source.index] = null
+      tierList[s_index]['list'] = tierList[s_index]['list'].filter(i => i !== null )
+
+      setTierList([...tierList])
+
+    }else{
+      let d_index = tierList.indexOf(tierList.filter(i => i.id === destination.droppableId )[0])
+      let item = collection.slice(source.index)[0]
+
+      tierList[d_index]['list'].push(item)
+      setTierList([...tierList])
+
+      collection[source.index] = null
+
+      const temp = collection.filter( i => i !== null)
+      setCollection([...temp])
     }
-    if(source.draggableId === destination.draggableId){
+  }
 
+  const addImage = (e) => {
+    
+    for(let i = 0; i < e.target.files.length; i++ ){
+      let reader = new FileReader();
+      reader.onload = (ev) => {
+        collection.push(_Image(ev.target.result))
+        setCollection([...collection])
+      };
+      reader.readAsDataURL(e.target.files[i]);
     }
-
-
   }
 
   return(
@@ -70,9 +106,9 @@ const List = () => {
       ))
     }
     </div>
-    <Droppable droppableId="imgs" >
+    <Droppable droppableId="imgs" direction='horizontal'>
       {(provided) => (
-      <div className="imgs flex" {...provided.droppableProps} ref={provided.innerRef} >
+      <div className="imgs flex flex-wrap" {...provided.droppableProps} ref={provided.innerRef} >
         {
           collection.map((i, index) => <Image index={index} {...i} key={i.uuid}/> )
         }
@@ -83,6 +119,9 @@ const List = () => {
   </DragDropContext>
   <div className='cntrls flex'>
     <button onClick={() => setEditable(!editable)}>Edit</button>
+    <input type='file' accept='image/*' multiple onChange={e => addImage(e)} />
+    <button><span className='material-symbols-outlined'>save</span>Save</button>
+    <button><span className='material-symbols-outlined'>open</span>Open</button>
   </div>
   </>
 )}
@@ -103,18 +142,18 @@ const Tier = (props) => {
         <span className="material-symbols-outlined text-white pointer">
           text_fields
         </span>
-        <span class="material-symbols-outlined text-white pointer">
+        <span className="material-symbols-outlined text-white pointer">
           remove
         </span>     
       </div>
       }
-      <div className='title' style={{ backgroundColor: props.color }}>{props.title}</div>
-      <Droppable droppableId={props.id} >
+      <div className='title not-selectable' style={{ backgroundColor: props.color }}>{props.title}</div>
+      <Droppable droppableId={props.id} direction='horizontal'>
         {(provided) => {
           return (
-          <div className='dropArea' {...provided.droppableProps} ref={provided.innerRef}>
+          <div className='dropArea flex' {...provided.droppableProps} ref={provided.innerRef}>
           {
-            props.list.map((i, index) => <Image {...i} index={index} /> )
+            props.list.map((i, index) => <Image {...i} index={index} key={i.uuid} /> )
           }
           {provided.placeholder}
           </div>
@@ -126,13 +165,11 @@ const Tier = (props) => {
 }
 
 const Image = (props) => {
-
   return(
-    <Draggable   index={props.index} draggableId={props.uuid}>
+    <Draggable index={props.index} draggableId={props.uuid} >
       {(provided) => (
-        <div className='imgc' ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}> 
-          {props.index}
-        </div>
+        <img src={props.url} alt='' className='imgc not-selectable no-transform' ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}> 
+        </img>
       )}
     </Draggable>
   )

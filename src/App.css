@@ -41,12 +41,11 @@
 
 .imgs {
   box-sizing: border-box;
-  max-width: 900px;
+  max-width: calc(4.5rem * 12);
   min-height: calc(4.5rem * 2);
   margin: auto;
   margin-top: 1rem;
   margin-bottom: 1rem;
-  background-color: rgb(239, 239, 239);
 }
 
 input[type='color'] {
@@ -85,5 +84,14 @@ input[type='color'] {
 .imgc{
   width: 4.5rem;
   height: 4.5rem;
-  background-color: aquamarine;
+  background-color: rgb(214, 214, 214);
+  object-fit: cover;
+  object-position: 50%;
+}
+
+.not-selectable{
+  user-select: none;
+}
+.flex-wrap{
+  flex-wrap: wrap;
 }
