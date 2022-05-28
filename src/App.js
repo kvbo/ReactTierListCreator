@@ -131,13 +131,14 @@ const List = () => {
       if(('collection' in _ ) && ('tierlist' in _ )){
         setCollection([..._.collection]);
         setTierList([..._.tierlist])
-      }
+      } 
     }
     reader.readAsText(e.target.files[0])
   }
 
   return(
   <>
+  
   <DragDropContext onDragEnd={e => onDragEnd(e) }>
   <div className='main'>
     {

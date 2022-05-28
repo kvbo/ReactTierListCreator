@@ -1,17 +1,19 @@
-# Tielister
+# React Tier Creator
 
 ## Overview
 Simple tier list creator return in react 
 
 ## Features
-=================
+
 * Drag and drop images
 * Change row color
 * Add images
+* Save list
+* Open list from file
 
 ## Yet to be implemented
-=================
-* Save list
-* Rename tier row	
-* Open tier list from file
+
+* Add and remove tiers
+* Rename tier
+
 
