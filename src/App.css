@@ -12,31 +12,38 @@
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
-  max-width: 900px;
-  margin: auto;
+  /* max-width: 900px; */
+  max-width: calc(4.5rem * 12);
+  margin: 1rem auto ;
 }
 
 .main .tier {
   display: flex;
   flex-wrap: nowrap;
-  height: 4.5rem;
+  min-height: 4.5rem;
   width: 100%;
   gap: 0.25rem;
 }
 
 .main .tier .title {
   display: flex;
+  flex-grow: 1;
+  flex-shrink: 1;
   justify-content: center;
   align-items: center;
-  width: 4.5rem;
-  height: 100%;
+  max-width: 4.5rem;
+  min-width: 4.5rem;
+  min-height: 100%;
   font-weight: 500;
   font-size: 1.25rem;
 }
 
 .main .dropArea {
   background-color: rgb(27, 27, 27);
-  flex: 1 1 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .imgs {
@@ -46,6 +53,7 @@
   margin: auto;
   margin-top: 1rem;
   margin-bottom: 1rem;
+  background-color: rgb(234, 234, 234);
 }
 
 input[type='color'] {
@@ -77,8 +85,9 @@ input[type='color'] {
 }
 .cntrls {
   box-sizing: border-box;
-  max-width: 900px;
+  max-width: calc(4.5rem * 12);
   margin: auto;
+  gap: .75rem;
 }
 
 .imgc{
@@ -94,4 +103,59 @@ input[type='color'] {
 }
 .flex-wrap{
   flex-wrap: wrap;
+}
+
+.btn{
+  background-color: rgb(234, 234, 234);
+  color: rgb(48, 48, 48);
+  border: none;
+  display: flex;
+  align-content: center;
+  align-items: center;
+  padding: .25rem;
+  gap: 0.25rem;
+  border-radius: 2rem;
+  transition: background-color .15s ease-in-out;
+  cursor: pointer;
+  box-shadow: 2px 2px 3px 0px rgba(48, 48, 48, 0.281);
+}
+.btn:hover{
+  background-color:rgb(218, 218, 218);
+}
+
+.btn:focus {
+  outline: none;
+  transform: scale(1.05);
+}
+
+
+.mr-0{
+  margin-right: 0;
+  margin-left: auto;
+}
+
+.d-none{
+  display: none;
+}
+
+.absolute {
+  position: absolute
+}
+
+.relative {
+  position: relative
+}
+
+.font-size-1 {
+  font-size: 1rem !important;
+}
+
+.empty{
+  width: 100%;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  color:rgb(188, 188, 188);
+  justify-content: center;
+  align-items: center;
 }

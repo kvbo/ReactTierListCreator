@@ -4,6 +4,9 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import './App.css';
 
 const App = () => {
+  useEffect(() => {
+   document.title = 'Tierlist Creator' 
+  })
   return (
     <div className="App"> 
       <List />
@@ -13,8 +16,8 @@ const App = () => {
 
 export default App;
 
-const _Tier = (title, color) => {
-  return { title: title, color: color, id: title + color, list: [] }
+const _Tier = (title, color, list=[]) => {
+  return { title: title, color: color, id: title + color, list: list }
 }
 
 const _Image = (url=null) => {
@@ -80,8 +83,11 @@ const List = () => {
   }
 
   const addImage = (e) => {
-    
     for(let i = 0; i < e.target.files.length; i++ ){
+      if(!/image\//g.test(e.target.files[i].type)){
+        continue;
+      }
+
       let reader = new FileReader();
       reader.onload = (ev) => {
         collection.push(_Image(ev.target.result))
@@ -89,6 +95,45 @@ const List = () => {
       };
       reader.readAsDataURL(e.target.files[i]);
     }
+  }
+
+  const drag = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+  }
+
+  const drop = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    e.target.files = e.dataTransfer.files
+    addImage(e)
+
+  }
+
+  const saveTemplate = async () => {
+
+    let data = {
+      tierlist: tierList,
+      collection: collection
+    }
+    const fileHandle = await window.showSaveFilePicker();
+    const fileStream = await fileHandle.createWritable();
+
+    await fileStream.write(new Blob([JSON.stringify(data)], {type: "text/plain"}));
+    await fileStream.close();
+  }             
+
+  const openTemplate = (e) => {
+    let reader = new FileReader();
+    reader.onload = (ev) => {
+      const _ = JSON.parse(ev.target.result);
+      if(('collection' in _ ) && ('tierlist' in _ )){
+        setCollection([..._.collection]);
+        setTierList([..._.tierlist])
+      }
+    }
+    reader.readAsText(e.target.files[0])
   }
 
   return(
@@ -106,11 +151,20 @@ const List = () => {
       ))
     }
     </div>
-    <Droppable droppableId="imgs" direction='horizontal'>
+    <Droppable droppableId="imgs" 
+      direction='horizontal'
+      >
       {(provided) => (
-      <div className="imgs flex flex-wrap" {...provided.droppableProps} ref={provided.innerRef} >
+      <div className="imgs flex flex-wrap" 
+        onDrop={e => drop(e)} onDragOver={ e => drag(e)}
+        
+        {...provided.droppableProps} 
+        ref={provided.innerRef} >
         {
           collection.map((i, index) => <Image index={index} {...i} key={i.uuid}/> )
+        }
+        {
+          collection.length === 0 && <div className='empty'>drag and drop</div>
         }
         {provided.placeholder}
       </div>
@@ -118,10 +172,28 @@ const List = () => {
     </Droppable>
   </DragDropContext>
   <div className='cntrls flex'>
-    <button onClick={() => setEditable(!editable)}>Edit</button>
-    <input type='file' accept='image/*' multiple onChange={e => addImage(e)} />
-    <button><span className='material-symbols-outlined'>save</span>Save</button>
-    <button><span className='material-symbols-outlined'>open</span>Open</button>
+    {/* <button className='btn' onClick={() => setEditable(!editable)}>
+      <span class="material-symbols-outlined">
+      settings
+      </span>
+      Edit
+    </button> */}
+
+    <label htmlFor="add-img" className='btn font-size-1'>
+      <input type='file' id='add-img' accept='image/*' className="d-none" multiple onChange={e => addImage(e)} />
+      <span className='material-symbols-outlined'>add</span>
+      add image
+    </label>
+    <button id='save' onClick={ saveTemplate } className='btn mr-0'>
+      <span className='material-symbols-outlined'>
+        save</span>
+        save
+    </button>
+    <label className='btn font-size-1' htmlFor='open'>
+      <input type='file' hidden accept='text/*' id='open' onChange={ e => openTemplate(e) }/>
+      <span className='material-symbols-outlined'>folder_open</span>
+      open
+    </label>
   </div>
   </>
 )}
@@ -166,10 +238,15 @@ const Tier = (props) => {
 
 const Image = (props) => {
   return(
-    <Draggable index={props.index} draggableId={props.uuid} >
+    <Draggable index={props.index} draggableId={props.uuid}>
       {(provided) => (
-        <img src={props.url} alt='' className='imgc not-selectable no-transform' ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}> 
-        </img>
+        <img src={props.url} 
+        alt='' 
+        className='imgc not-selectable' 
+        ref={provided.innerRef}       
+        {...provided.draggableProps} 
+        {...provided.dragHandleProps}
+        /> 
       )}
     </Draggable>
   )
