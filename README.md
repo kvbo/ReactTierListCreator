@@ -1,7 +1,7 @@
 # React Tier Creator
 
 ## Overview
-Simple tier list creator return in react 
+Simple tier list creator written in react 
 
 ## Features
 
